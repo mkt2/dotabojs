@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import Timer from "./Timer";
 
-function generateNextTimeObject(timeObject) {
+function generateNextTimeObject() {
     var today = new Date();
 
     //When do we play:
@@ -14,19 +14,9 @@ function generateNextTimeObject(timeObject) {
     nextGameDate.setSeconds(helperForDate[3]);
     console.log(nextGameDate); //This will be the date for next Friday at 20:00
 
-
-    //var date = new Date(2020, 9, 29);
     var secondsToGameDate = timeBetweenDates(today, nextGameDate);
     return secondsToDaysHoursMinutesSeconds(secondsToGameDate);
 
-    // var arr = secondsToDaysHoursMinutesSeconds(secondsToGameDate);
-
-    // return {
-    //     days: timeObject.days,
-    //     hours: timeObject.hours,
-    //     minutes: timeObject.minutes,
-    //     seconds: timeObject.seconds += 1
-    // }
 }
 
 function nextWeekdayDate(date, day_in_week) {
@@ -52,7 +42,6 @@ function secondsToDaysHoursMinutesSeconds(s) {
     m = Math.floor(s / 60);
     s = s - m * 60;
 
-    //return [d, h, m, s];
     return {
         days: d,
         hours: h,
@@ -63,36 +52,28 @@ function secondsToDaysHoursMinutesSeconds(s) {
 
 
 function App() {
+    const [B, setB] = useState(false);
     const [timeObject, setTimeObject] = useState({
         days: 1,
         hours: 0,
         minutes: 0,
         seconds: 0
     });
-    const [seconds, setSeconds] = useState(0);
-
 
     useEffect(() => {
         const interval = setInterval(() => {
             //This will run every second!
             setTimeObject(oldValue => {
-                return generateNextTimeObject(oldValue);
-                // return {
-                //     days: oldValue.days,
-                //     hours: oldValue.hours,
-                //     minutes: oldValue.minutes,
-                //     seconds: oldValue.seconds += 1
-                // }
+                return generateNextTimeObject();
             })
-            console.log(timeObject.seconds);
-            console.log(timeObject.days);
+            setB(true);
         }, 1000);
         return () => clearInterval(interval);
     }, [timeObject]);
 
     return (
         <div>
-            <Timer days={timeObject.days} hours={timeObject.hours} minutes={timeObject.minutes} seconds={timeObject.seconds} ></Timer>
+            {B && <Timer days={timeObject.days} hours={timeObject.hours} minutes={timeObject.minutes} seconds={timeObject.seconds} ></Timer> }
         </div>
     )
 }
